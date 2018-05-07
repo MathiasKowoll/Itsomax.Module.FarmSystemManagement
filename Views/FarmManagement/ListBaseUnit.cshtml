@@ -1,0 +1,146 @@
+﻿    <div class="container-fluid">
+        <div class="col-xs-12">
+            <br />
+            <div class="card card-outline-info">
+                <div class="card-header">
+                    <h2 class="m-b-0 text-themecolor">All Base Units</h2>
+                </div>
+                <div class="card-body">
+
+                    <table id="baseunit" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Base Unit Name</th>
+                                <th>Value</th>
+                                <th>Is Active</th>
+                                <th>Updated</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <br />
+                    <a asp-controller="FarmManagement" asp-action="AddBaseUnit" class="btn btn-info waves-effect waves-light">Create Base Unit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section scripts{
+    <script src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#baseunit').DataTable({
+                dom: 'Bfrtip',
+                ajax: {
+                    url: '/get/baseunit/json/',
+                    dataSrc: ''
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "name" },
+                    { "data": "value" },
+                    {
+                        "data": "active",
+                        "render": function (data, type, row, meta) {
+                            if (data == false) {
+                                var html = '<i class="mdi mdi-close"></i>';
+                                return html;
+                            }
+                            else {
+                                var html = '<i class="mdi mdi-check"></i>';
+                                return html;
+                            }
+
+
+                        }
+                    },
+                    { "data": "updatedOn" },
+                ],
+                paging: true,
+                lengthChange: false,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false,
+                        searchable: false
+                    }
+                ],
+                select: {
+                    style: 'single'
+                },
+                buttons: [
+                    {
+                        text: 'Enable/Disable',
+                        action: function (e, dt, node, config) {
+                            var rowData = dt.row({ selected: true }).data()
+
+                            if (rowData == null) {
+                                $.alert({
+                                    title: 'No base unit selected!',
+                                    content: 'No base unit has been selected, to continue please select a base unit.',
+                                });
+                            }
+                                
+                            var title = '';
+                            var content = ''
+                            if (rowData.active == false) {
+                                titleConfirm = 'Enable base unit'
+                                contentConfirm = 'enable'
+                            }
+                            else {
+                                titleConfirm = 'Disable base unit'
+                                contentConfirm = 'disable'
+                            }
+                            $.confirm({
+                                title: titleConfirm,
+                                content: 'Are you sure do you want to ' + contentConfirm + ' Base Unit: ' + rowData.name + '?',
+                                buttons: {
+                                    confirm: function () {
+                                        $.ajax({
+                                            url: '/FarmManagement/ActivateBaseUnit/' + rowData.id,
+                                            type: 'DELETE',
+                                            success: function (obj) {
+                                                toastr.success('', 'Base Unit: ' + rowData.name + ' ' + contentConfirm + ' succesfully', { positionClass: 'toast-top-center' });
+                                                table.ajax.reload();
+                                            },
+                                            error: function (obj) {
+                                                table.ajax.reload();
+                                                toastr.error('', 'Base Unit: ' + rowData.name + ' could not be enabled/disabled', { positionClass: 'toast-top-center' });
+                                            }
+                                        });
+                                    },
+                                    cancel: function () {
+                                        table.ajax.reload();
+                                    }
+                                }
+                            });
+        },
+            enabled: false
+            }
+            ]
+        });
+        
+        table.on('select', function () {
+            var selectedRows = table.rows({ selected: true }).count();
+            table.button(0).enable(selectedRows == 1);
+            table.button(1).enable(selectedRows == 1);
+        });
+        table.on('deselect', function () {
+            //var unselectedRows = table.rows( {selected: false} ).count();
+            table.button(0).disable();
+            table.button(1).disable();
+        });
+
+
+
+        setInterval(function () {
+            table.ajax.reload();
+        }, 30000);
+            });
+    </script>
+    }

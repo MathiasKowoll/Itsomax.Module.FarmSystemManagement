@@ -1,0 +1,72 @@
+﻿@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("MealManagement")) || User.IsInRole("Admin")))
+{
+    <hr class="m-t-0 m-b-40">
+    <li class="nav-small-cap">COW MEAL MANAGEMENT</li>
+}
+@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("MealManagement")) || User.IsInRole("Admin")))
+{
+    <li>
+        <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
+            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Meal Management</span>
+        </a>
+        <ul aria-expanded="false" class="collapse">
+            <li><a href="/MealManagement/SelectCostCenter">Enter new Meal</a></li>
+
+        </ul>
+    </li>
+}
+@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmManagement")) || User.IsInRole("Admin")))
+{
+    <hr class="m-t-0 m-b-40">
+    <li class="nav-small-cap">FARM MANAGEMENT</li>
+}
+@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmManagement")) || User.IsInRole("Admin")))
+{
+    <li>
+        <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
+            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Farm Management</span>
+        </a>
+        <ul>
+            <li>
+                <a href="#" class="has-arrow waves-effect">Base Units</a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="/FarmManagement/AddBaseUnit">Add BaseUnit</a></li>
+                    <!--<li><a href="/FarmManagement/LocationActiveList">List active Locations</a></li>-->
+                    <li><a href="/FarmManagement/ListBaseUnit">List BaseUnits</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="has-arrow waves-effect">Locations</a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="/FarmManagement/AddLocation">Add Location</a></li>
+                    <!--<li><a href="/FarmManagement/LocationActiveList">List active Locations</a></li>-->
+                    <li><a href="/FarmManagement/ListLocation">List Locations</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="has-arrow waves-effect">Cost Centers</a>
+                <ul aria-expanded="false" class="collapse">
+                    <li><a href="/FarmManagement/AddCostCenter">Add Cost Center</a></li>
+                    <!--<li><a href="/FarmManagement/CostCenterActiveList">List active Center Costs</a></li>-->
+                    <li><a href="/FarmManagement/ListCostCenter">List Center Costs</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="has-arrow waves-effect">Products</a>
+                <ul>
+                    <li><a href="/FarmManagement/AddProduct">Add Product</a></li>
+                    <!--<li><a href="/FarmManagement/ProductList">Add Product</a></li>-->
+                    <li><a href="/FarmManagement/ListProduct">List Products</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
+            <i class="mdi mdi-book-multiple"></i> <span class="hide-menu">Farm Reports</span>
+        </a>
+        <ul>
+            <li><a href="/FarmManagement/GetConsumptionReport">Consumption Report</a></li>
+        </ul>
+    </li>
+}

@@ -1,0 +1,42 @@
+﻿@model ConsumptionViewModel
+<div class="container-fluid">
+    <br />
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-outline-info">
+                <div class="card-body">
+                    <form class="form-horizontal  p-t-20" asp-controller="MealManagement" asp-action="AddMeal" method="Post">
+                        <h3 class="card-title">Add Meal</h3>
+                        <div class="form-group row">
+                            <label for="name" class="control-label col-sm-2 text-right">Cost Center Code</label>
+                            <div class="col-sm-4">
+                                <p class="form-control-static"> Meal Add for @Model.CostCenterName </p>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center">
+                            <input asp-for="CostCenterId" type="hidden" class="form-control" />
+                        </div>
+                        @foreach (var item in @Model.ProductLists)
+                        {
+                            <div class="form-group row">
+                                <label for="name" class="control-label col-sm-2 text-right">@item.Name (@item.BaseUnit)</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <input name="key"  type="hidden" class="form-control" value="@item.Name">
+                                        <input name="value" type="number" class="form-control" value="0" min="0" step="1">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                            <button type="submit" class="btn btn-info waves-effect waves-light"> <i class="fa fa-check "></i> Save</button>
+                            <a asp-controller="MealManagement" asp-action="SelectCostCenter" class="btn btn-info wavas-effect waves-light">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
