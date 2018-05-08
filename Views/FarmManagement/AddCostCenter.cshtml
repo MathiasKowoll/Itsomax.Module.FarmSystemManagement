@@ -13,7 +13,7 @@
                             <label for="code" class="control-label col-sm-2 text-right">Cost Center Code</label>
                             <div class="col-sm-4">
                                 <div class="input-group">
-                                    <input id="name" asp-for="Code" type="text" class="form-control" placeholder="Cost Center Code">
+                                    <input id="code" asp-for="Code" type="text" class="form-control" placeholder="Cost Center Code">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -32,10 +32,10 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="name" class="control-label col-sm-2 text-right">Warehouse Code</label>
+                            <label for="warehouse" class="control-label col-sm-2 text-right">Warehouse Code</label>
                             <div class="col-sm-4">
                                 <div class="input-group">
-                                    <input id="name" asp-for="WarehouseCode" type="text" class="form-control" placeholder="Warehouse Code">
+                                    <input id="warehouse" asp-for="WarehouseCode" type="text" class="form-control" placeholder="Warehouse Code">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -52,6 +52,42 @@
                             </div>
                             <div class="col-sm-6">
                                 <span asp-validation-for="Active"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-2 text-right" asp-for="IsFarming" for="farming"></label>
+                            <div class="col-sm-4">
+                                <div class="checkbox checkbox-info">
+                                    <input asp-for="IsFarming" type="checkbox" id="farming" />
+                                    <label for="farming"></label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span asp-validation-for="IsFarming"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-2 text-right" asp-for="IsMeal" for="meal"></label>
+                            <div class="col-sm-4">
+                                <div class="checkbox checkbox-info">
+                                    <input asp-for="IsMeal" type="checkbox" id="meal" />
+                                    <label for="meal"></label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span asp-validation-for="IsMeal"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-2 text-right" asp-for="IsMedical" for="medical"></label>
+                            <div class="col-sm-4">
+                                <div class="checkbox checkbox-info">
+                                    <input asp-for="IsMedical" type="checkbox" id="medical" />
+                                    <label for="medical"></label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span asp-validation-for="IsMedical"></span>
                             </div>
                         </div>
                         <div class="form-group row">

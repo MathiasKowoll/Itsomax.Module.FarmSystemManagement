@@ -205,7 +205,10 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 Id = costCenter.Id,
                 LocationId = costCenter.LocationId,
                 Name = costCenter.Name,
-                WarehouseCode = costCenter.WarehouseCode
+                WarehouseCode = costCenter.WarehouseCode,
+                IsFarming =  costCenter.IsFarming,
+                IsMeal = costCenter.IsMeal,
+                IsMedical = costCenter.IsMedical
             };
             ViewBag.LocationList = _farm.GetLocationList(costCenter.Id);
             ViewBag.Code = costCenter.Code;
@@ -388,7 +391,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var model = new ProductCostCenterViewModel
             {
                 CostCenterId = costCenter.Id,
-                Name = _farm.GetCostCenterProductName(costCenter.Id)
+                Name = _farm.GetCostCenterProductName(costCenter.Id),
+                Active = _farm.GetCostCenterProductActive(costCenter.Id)
             };
 
             model.Products = _farm.GetSelectListProducts(costCenter.Id);
@@ -400,6 +404,19 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         [HttpPost,ValidateAntiForgeryToken]
         public IActionResult AddProductsToCostCenterPost(ProductCostCenterViewModel model, params string[] selectedProducts)
         {
+            if (selectedProducts.Count() == 0)
+            {
+                _toastNotification.AddWarningToastMessage("Need to select a product", new ToastrOptions()
+                {
+                    PositionClass = ToastPositions.TopCenter
+                });
+                var costCenter2 = _farm.GetCostCenterById(model.CostCenterId);
+                model.Products = _farm.GetSelectListProducts(costCenter2.Id);
+                ViewBag.Name = costCenter2.Name;
+                ViewBag.Code = costCenter2.Code;
+                
+                return View(nameof(AddProductsToCostCenter),model);
+            }
             
             var farm = _farm.AddProductsToCostCenter(model,GetCurrentUserAsync().Result.UserName,selectedProducts).Result;
             if (farm.Succeeded)
@@ -434,23 +451,39 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         */
         public IActionResult GetConsumptionReport()
         {
+            var list = _farm.GetWarehouseListNames();
+            
+            ViewBag.WarehouseList = list;
 			ViewBag.Url = "";
             return View();
         }
 		[HttpPost,ValidateAntiForgeryToken]
         public IActionResult GetConsumptionReport(GenerateConsumptionReportViewModel model)
         {
-			var report = _farm.ConsumptionReport(model.ConsumptionDate,model.Folio).ToList();
+            if (model.WarehouseName == "Select a Warehouse")
+            {
+                _toastNotification.AddInfoToastMessage("You did not select a warehouse", new ToastrOptions()
+                {
+                    PositionClass = ToastPositions.TopCenter
+                });
+                var list2 = _farm.GetWarehouseListNames();
+                ViewBag.WarehouseList = list2;
+                ViewBag.Url = "";
+                return View();
+            }
+			var report = _farm.ConsumptionReport(model.ConsumptionDate,model.Folio,model.WarehouseName).ToList();
 			if(!report.Any())
 			{
 				_toastNotification.AddInfoToastMessage("There is no consumption report for date "+model.ConsumptionDate.ToString("MM-dd-yyyy"), new ToastrOptions()
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
-				ViewBag.Url = "";
+			    var list2 = _farm.GetWarehouseListNames();
+			    ViewBag.WarehouseList = list2;
+			    ViewBag.Url = "";
 				return View();
 			}
-            var excel = _excel.GenerateExcelName("SalidaSoftland",model.ConsumptionDate);
+            var excel = _excel.GenerateExcelName("SalidaSoftland"+model.WarehouseName,model.ConsumptionDate);
 			var excelPath = excel[0];
 			var excelName = excel[1];
             //var file = new FileInfo(excel);
@@ -514,21 +547,12 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 }
                 workbook.Write(fs);
             }
+            
+            var list = _farm.GetWarehouseListNames();
+            
+            ViewBag.WarehouseList = list;
             ViewBag.Url = "/Temp/" + excelName;
 			return View();
-
-            /*
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(excel, FileMode.Open))
-
-            {
-
-                await stream.CopyToAsync(memory);
-
-            }
-
-            return File(memory, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", model.ConsumptionDate.ToString("yyyyMMdd") + ".xlsx");
-            */
         }
 
         [HttpDelete]
@@ -613,7 +637,10 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                     a.Code,
                     a.Name,
                     a.Active,
-                    a.UpdatedOn
+                    a.UpdatedOn,
+                    a.IsFarming,
+                    a.IsMedical,
+                    a.IsMeal
                 });
 
         }

@@ -36,7 +36,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 CostCenterName = costCenter.Name,
                 CostCenterId = costCenter.Id,
-                ProductLists = prodList,
+                ProductLists = prodList
             };
             
             return View(consumptionList);
@@ -69,7 +69,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 
         public IActionResult SelectCostCenter()
         {
-            ViewBag.LocationList = _farm.GetCostCenterList();
+            ViewBag.LocationList = _farm.GetCostCenterMealList();
             return View();
         }
 
