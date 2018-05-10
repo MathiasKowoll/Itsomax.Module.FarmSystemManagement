@@ -483,9 +483,20 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 			    ViewBag.Url = "";
 				return View();
 			}
-            var excel = _excel.GenerateExcelName("SalidaSoftland"+model.WarehouseName,model.ConsumptionDate);
+			var excel = _excel.GenerateExcelName("SalidaSoftland"+model.WarehouseName,model.ConsumptionDate,model.WarehouseName);
 			var excelPath = excel[0];
 			var excelName = excel[1];
+			if(excel == null)
+			{
+				_toastNotification.AddInfoToastMessage("There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"), new ToastrOptions()
+                {
+                    PositionClass = ToastPositions.TopCenter
+                });
+                var list2 = _farm.GetWarehouseListNames();
+                ViewBag.WarehouseList = list2;
+                ViewBag.Url = "";
+                return View();
+			}
             //var file = new FileInfo(excel);
 
 			using (var fs = new FileStream(excelPath,FileMode.Create,FileAccess.ReadWrite))
