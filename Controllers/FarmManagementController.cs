@@ -486,7 +486,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 			var excel = _excel.GenerateExcelName("SalidaSoftland"+model.WarehouseName,model.ConsumptionDate,model.WarehouseName);
 			var excelPath = excel[0];
 			var excelName = excel[1];
-			if(excel == null)
+			if(excel[0] == null)
 			{
 				_toastNotification.AddInfoToastMessage("There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"), new ToastrOptions()
                 {
