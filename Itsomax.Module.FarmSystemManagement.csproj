@@ -1,5 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PreserveCompilationContext>false</PreserveCompilationContext>
@@ -7,14 +6,10 @@
     <OutputType>Library</OutputType>
     <Description>Module to manage users, roles and permitions over modules</Description>
   </PropertyGroup>
-
-
   <ItemGroup>
     <PackageReference Update="Microsoft.NETCore.App" Version="2.1.0-rc1" />
   </ItemGroup>
-    
   <ItemGroup>
     <ProjectReference Include="..\Itsomax.Module.FarmSystemCore\Itsomax.Module.FarmSystemCore.csproj" />
   </ItemGroup>
-  
 </Project>

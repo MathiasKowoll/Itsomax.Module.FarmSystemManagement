@@ -1,0 +1,31 @@
+﻿@model ConsumptionSelectActivity
+
+<div class="container-fluid">
+    <br />
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-outline-info">
+                <div class="card-body">
+                    <form class="form-horizontal  p-t-20" asp-controller="MealManagement" asp-action="SelectCostCenter" method="Post">
+                        <h3 class="box-title">Select CostCenter</h3>
+                        <hr class="m-t-0 m-b-40">
+                        <div class="form-group row align-items-center">
+                            <label class="control-label col-sm-2 text-right">Cost Center</label>
+                            <div class="col-sm-4">
+                                <select class="form-control custom-select" asp-for="CostCenterId" asp-items="@(new SelectList(@ViewBag.LocationList, "LocationId", "LocationName","Selected"))"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-info"> <i class="fa fa-check waves-effect waves-light"></i> Go</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
