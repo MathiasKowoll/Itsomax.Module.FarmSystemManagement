@@ -13,7 +13,7 @@
                             <label for="name" class="control-label col-sm-2 text-right">Select Date</label>
                             <div class="col-sm-2">
                                 <div class="input-group clockpicker">
-                                    <input id="datepicker-autoclose" asp-for="ConsumptionDate" type="text" class="form-control" placeholder="mm/dd/yyyy">
+                                    <input id="datepicker-autoclose" asp-for="ConsumptionDate" type="text" class="form-control" placeholder="yyyy/mm/dd">
                                     <div class="input-group-append">
                                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                     </div>
@@ -78,7 +78,7 @@
         jQuery('#datepicker-autoclose').datepicker({
                 autoclose: true,
                 todayHighlight: true,
-                format: 'mm/dd/yyyy'
+                format: 'yyyy/mm/dd',
         });
     </script>
 } 
