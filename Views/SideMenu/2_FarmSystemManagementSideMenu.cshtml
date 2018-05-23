@@ -15,15 +15,23 @@
         </ul>
     </li>
 }
-@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("MedicalManagement")) || User.IsInRole("Admin")))
+@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmSpecialManagement")) || User.IsInRole("Admin")))
+{
+    <hr class="m-t-0 m-b-40">
+    <li class="nav-small-cap">SPECIAL MANAGEMENT</li>
+}
+@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmSpecialManagement")) || User.IsInRole("Admin")))
 {
     <li>
         <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
-            <i class="mdi mdi-medical-bag"></i> <span class="hide-menu">Medicine Management</span>
+            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Special Management</span>
         </a>
         <ul aria-expanded="false" class="collapse">
-            <li><a href="/MedicalManagement/SelectCostCenter">Enter new Medicine</a></li>
+            <li><a href="/FarmSpecialManagement/SelectMealCostCenter">Enter new Meal</a></li>
 
+        </ul>
+        <ul aria-expanded="false" class="collapse">
+            <li><a href="/FarmSpecialManagement/ListConsumption">Get Current Consumptions</a></li>
         </ul>
     </li>
 }

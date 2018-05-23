@@ -12,4 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Itsomax.Module.FarmSystemCore\Itsomax.Module.FarmSystemCore.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Controllers\MedicalManagementController.cs" />
+  </ItemGroup>
 </Project>

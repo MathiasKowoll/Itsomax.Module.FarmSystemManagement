@@ -71,7 +71,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             string[] products = form["key"].ToArray();
             string[] values = form["value"].ToArray();
 
-            var farm = _farm.SaveConsumption(model.CostCenterId, products, values, GetCurrentUserAsync().Result.UserName).Result;
+            var farm = _farm.SaveConsumption(model.CostCenterId, products, values, GetCurrentUserAsync().Result.UserName,null).Result;
             if (farm.Succeeded)
             {
                 _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
