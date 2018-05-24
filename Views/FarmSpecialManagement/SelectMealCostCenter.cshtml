@@ -5,19 +5,22 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card card-outline-info">
+                <div class="card-header">
+                    <h2 class="m-b-0 text-themecolor">Select Special Meal Cost Center</h2>
+                </div>
                 <div class="card-body">
                     <form class="form-horizontal  p-t-20" asp-controller="FarmSpecialManagement" asp-action="SelectMealCostCenter" method="Post">
-                        <h3 class="box-title">Select CostCenter</h3>
-                        <hr class="m-t-0 m-b-40">
                         <div class="form-group row align-items-center">
                             <label class="control-label col-sm-2 text-right">Cost Center</label>
                             <div class="col-sm-4">
-                                <select class="form-control custom-select" asp-for="CostCenterId" asp-items="@(new SelectList(@ViewBag.LocationList, "LocationId", "LocationName","Selected"))"></select>
+                                <select class="form-control custom-select" asp-for="CostCenterId" asp-items="@(new SelectList(@ViewBag.LocationList, "LocationId", "LocationName", "Selected"))"></select>
                             </div>
                         </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-info"> <i class="fa fa-check waves-effect waves-light"></i> Go</button>
+                        <div class="form-group row">
+                            <label for="name" class="control-label col-sm-2 text-right"></label>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-info"> <i class="fa fa-check waves-effect waves-light"></i> Go</button>
+                            </div>
                         </div>
                     </form>
                 </div>

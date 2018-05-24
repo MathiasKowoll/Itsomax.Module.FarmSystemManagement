@@ -78,15 +78,15 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         {
             if (model.CostCenterId == 0)
             {
-                _toastNotification.AddErrorToastMessage("Need to select a Cost Center", new ToastrOptions()
+                _toastNotification.AddWarningToastMessage("Need to select a Cost Center", new ToastrOptions()
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
-                ViewBag.LocationList = _farm.GetCostCenterList();
+                ViewBag.LocationList = _farm.GetCostCenterMealList();
                 return View();
             }
             var costCenter = _farm.GetCostCenterById(model.CostCenterId);
-            var prodlist = _farm.GetProductList(model.CostCenterId).ToList();
+            //var prodlist = _farm.GetProductList(model.CostCenterId).ToList();
 
             return RedirectToAction(nameof(AddMeal),new {id=costCenter.Id});
         }

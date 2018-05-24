@@ -4,9 +4,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card card-outline-info">
+                <div class="card-header">
+                    <h2 class="m-b-0 text-themecolor">Edit Consumption</h2>
+                </div>
                 <div class="card-body">
                     <form class="form-horizontal  p-t-20" asp-controller="FarmSpecialManagement" asp-action="EditConsumption" method="Post">
-                        <h3 class="card-title">Add Meal</h3>
                         <div class="form-group row">
                             <label for="name" class="control-label col-sm-2 text-right"></label>
                             <div class="col-sm-4">
@@ -14,7 +16,7 @@
                             </div>
                         </div>
                         <div class="form-group row align-items-center">
-                            <input id="name" asp-for="ConsumptionId" type="hidden" class="form-control" />
+                            <input id="name" asp-for="ConsumptionId" type="hidden" class="form-control"/>
                         </div>
                         @foreach (var item in @Model.ProductListEdit)
                         {
@@ -22,14 +24,20 @@
                                 <label for="name" class="control-label col-sm-2 text-right">@item.Name (@item.BaseUnit)</label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
-                                        <input name="key"  type="hidden" class="form-control" value="@item.Name">
+                                        <input name="key" type="hidden" class="form-control" value="@item.Name">
                                         <input name="value" type="number" class="form-control" value="@item.Value" min="0" step="1">
                                     </div>
                                 </div>
                             </div>
                         }
-                            <button type="submit" class="btn btn-info waves-effect waves-light"> <i class="fa fa-check "></i> Save</button>
-                            <a asp-controller="FarmSpecialManagement" asp-action="ListConsumption" class="btn btn-info wavas-effect waves-light">Cancel</a>
+                        <div class="form-group row">
+                            <label for="name" class="control-label col-sm-2 text-right"></label>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-info waves-effect waves-light"> <i class="fa fa-check "></i> Save</button>
+                                <a asp-controller="FarmSpecialManagement" asp-action="ListConsumption" class="btn btn-info waves-effect waves-light">Cancel</a>
+                            </div>
+                        </div>
+                        
                     </form>
                 </div>
             </div>

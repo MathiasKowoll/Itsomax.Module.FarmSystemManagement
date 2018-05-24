@@ -5,12 +5,15 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card card-outline-info">
+                <div class="card-header">
+                    <h2 class="m-b-0 text-themecolor">Assign Products to Cost Center</h2>
+                </div>
                 <div class="card-body">
                     <form class="form-horizontal  p-t-20" asp-controller="FarmManagement" asp-action="AddProductsToCostCenterPost" method="Post">
                         <h3 class="box-title">Activity Details</h3>
                         <hr class="m-t-0 m-b-40">
                         <div class="form-group row">
-                            <input asp-for="CostCenterId" type="hidden" class="form-control" />
+                            <input asp-for="CostCenterId" type="hidden" class="form-control"/>
                         </div>
                         <div class="form-group row">
                             <label for="name" class="control-label col-sm-2 text-right">Cost Center Name</label>
@@ -39,7 +42,7 @@
                             <label class="control-label col-sm-2 text-right" asp-for="Active" for="active"></label>
                             <div class="col-sm-4">
                                 <div class="checkbox checkbox-info">
-                                    <input asp-for="Active" type="checkbox" id="active" />
+                                    <input asp-for="Active" type="checkbox" id="active"/>
                                     <label for="active"></label>
                                 </div>
                             </div>
@@ -61,9 +64,12 @@
                             </div>
                         </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-info"> <i class="fa fa-check"></i> Save</button>
-                            <a asp-controller="FarmManagement" asp-action="ListCostCenter"  class="btn btn-info">Cancel</a>
+                        <div class="form-group row">
+                            <label for="name" class="control-label col-sm-2 text-right"></label>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-info"> <i class="fa fa-check waves-effect waves-light"></i> Save</button>
+                                <a asp-controller="FarmManagement" asp-action="ListCostCenter" class="btn btn-info waves-effect waves-light">Cancel</a>
+                            </div>
                         </div>
                     </form>
                 </div>

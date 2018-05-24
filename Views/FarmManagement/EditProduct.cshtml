@@ -5,15 +5,18 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card card-outline-info">
+                <div class="card-header">
+                    <h2 class="m-b-0 text-themecolor">Edit Product</h2>
+                </div>
                 <div class="card-body">
                     <form class="form-horizontal  p-t-20" asp-controller="FarmManagement" asp-action="EditProductPost" method="Post">
                         <h3 class="box-title">Product Details</h3>
                         <hr class="m-t-0 m-b-40">
                         <div class="form-group row">
-                            <input asp-for="Id" type="hidden" class="form-control" />
+                            <input asp-for="Id" type="hidden" class="form-control"/>
                         </div>
                         <div class="form-group row">
-                            <input asp-for="Code" type="hidden" class="form-control" />
+                            <input asp-for="Code" type="hidden" class="form-control"/>
                         </div>
                         <div class="form-group row">
                             <label for="name" class="control-label col-sm-2 text-right">Product Code</label>
@@ -36,7 +39,7 @@
                             <label class="control-label col-sm-2 text-right" asp-for="Active" for="active"></label>
                             <div class="col-sm-4">
                                 <div class="checkbox checkbox-info">
-                                    <input asp-for="Active" type="checkbox" id="active" />
+                                    <input asp-for="Active" type="checkbox" id="active"/>
                                     <label for="active"></label>
                                 </div>
                             </div>
@@ -58,13 +61,16 @@
                         <div class="form-group row align-items-center">
                             <label class="control-label col-sm-2 text-right">Locations</label>
                             <div class="col-sm-4">
-                                <select class="form-control custom-select" asp-for="BaseUnitId" asp-items="@(new SelectList(@ViewBag.BaseUnitList, "BaseUnitId", "BaseUnitName","Selected"))"></select>
+                                <select class="form-control custom-select" asp-for="BaseUnitId" asp-items="@(new SelectList(@ViewBag.BaseUnitList, "BaseUnitId", "BaseUnitName", "Selected"))"></select>
                             </div>
                         </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-info"> <i class="fa fa-check waves-effect waves-light"></i> Save</button>
-                            <a asp-controller="FarmManagement" asp-action="ListProduct" class="btn btn-info waves-effect waves-light">Cancel</a>
+                        <div class="form-group row">
+                            <label for="name" class="control-label col-sm-2 text-right"></label>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-info"> <i class="fa fa-check waves-effect waves-light"></i> Save</button>
+                                <a asp-controller="FarmManagement" asp-action="ListProduct" class="btn btn-info waves-effect waves-light">Cancel</a>
+                            </div>
                         </div>
                     </form>
                 </div>
