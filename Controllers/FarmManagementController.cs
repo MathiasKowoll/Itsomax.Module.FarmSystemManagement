@@ -45,21 +45,20 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var farm = _farm.AddBaseUnit(model,GetCurrentUserAsync().Result.UserName).Result;
             if (farm.Succeeded)
             {
-                _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return RedirectToAction(nameof(ListBaseUnit));
             }
-            else
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions()
             {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
-                {
-                    PositionClass = ToastPositions.TopCenter
-                });
-                return View(nameof(AddBaseUnit),model);
-            }
+                PositionClass = ToastPositions.TopCenter
+            });
+            return View(nameof(AddBaseUnit),model);
         }
+       
 
         public IActionResult AddLocation()
         {
@@ -73,20 +72,57 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var farm = _farm.AddLocation(model,GetCurrentUserAsync().Result.UserName).Result;
             if (farm.Succeeded)
             {
-                _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return RedirectToAction(nameof(ListLocation));
             }
-            else
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
             {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+                PositionClass = ToastPositions.TopCenter
+            });
+            return View(nameof(AddLocation),model);
+        }
+        
+        [Route("/get/baseunit/{id}")]
+        public IActionResult EditBaseUnit(long id)
+        {
+            var baseUnit = _farm.GetBaseUnitById(id);
+            var editBaseUnit = new BaseUnitEditViewModel
+            {
+                Id = baseUnit.Id,
+                Active = baseUnit.Active,
+                Description = baseUnit.Description,
+                Name = baseUnit.Name,
+                Value = baseUnit.Value
+            };
+            return View(editBaseUnit);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult EditBaseUnitPost(BaseUnitEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(EditBaseUnit),model);
+            }
+            var res = _farm.EditBaseUnit(model, GetCurrentUserAsync().Result.UserName).Result;
+            if (res.Succeeded)
+            {
+                _toastNotification.AddSuccessToastMessage(res.OkMessage, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
-                return View(nameof(AddLocation),model);
+                return RedirectToAction(nameof(ListBaseUnit));
             }
+            _toastNotification.AddWarningToastMessage(res.Errors, new ToastrOptions
+            {
+                PositionClass = ToastPositions.TopCenter
+            });
+            return View(nameof(EditBaseUnit),model);
+            
         }
 
         [Route("/get/location/{id}")]
@@ -113,30 +149,26 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
                     return RedirectToAction(nameof(ListLocation));
                 }
-                else
-                {
-                    _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
-                    {
-                        PositionClass = ToastPositions.TopCenter
-                    });
-                    return View(nameof(EditLocation),model);
-                }
-            }
-            else
-            {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+
+                _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return View(nameof(EditLocation),model);
             }
-            
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
+            {
+                PositionClass = ToastPositions.TopCenter
+            });
+            return View(nameof(EditLocation),model);
+
         }
         public IActionResult AddCostCenter()
         {          
@@ -154,7 +186,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 var locationList = _farm.GetLocationList(null);
                 ViewBag.LocationList = locationList;
                 
-                _toastNotification.AddErrorToastMessage("Need to select a Location", new ToastrOptions()
+                _toastNotification.AddErrorToastMessage("Need to select a Location", new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -166,22 +198,20 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
                     return RedirectToAction(nameof(ListCostCenter));
                 }
-                else
+
+                _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
                 {
-                    _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
-                    {
-                        PositionClass = ToastPositions.TopCenter
-                    });
-                    var locationList = _farm.GetLocationList(null);
-                    ViewBag.LocationList = locationList;
-                    return View(nameof(AddCostCenter),model);
-                }
+                    PositionClass = ToastPositions.TopCenter
+                });
+                var locationList = _farm.GetLocationList(null);
+                ViewBag.LocationList = locationList;
+                return View(nameof(AddCostCenter),model);
             }
             else
             {
@@ -223,26 +253,14 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
                     return RedirectToAction(nameof(ListCostCenter));
                 }
-                else
-                {
-                    _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
-                    {
-                        PositionClass = ToastPositions.TopCenter
-                    });
-                    ViewBag.LocationList = _farm.GetLocationList(model.Id);
-                    ViewBag.Code = model.Code;
-                    return View(nameof(EditCostCenter),model);
-                }
-            }
-            else
-            {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+
+                _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -250,18 +268,26 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 ViewBag.Code = model.Code;
                 return View(nameof(EditCostCenter),model);
             }
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
+            {
+                PositionClass = ToastPositions.TopCenter
+            });
+            ViewBag.LocationList = _farm.GetLocationList(model.Id);
+            ViewBag.Code = model.Code;
+            return View(nameof(EditCostCenter),model);
         }
 
         public IActionResult AddProductsToCostCenter()
         {
             var products = new ProductCostCenterViewModel();
-            var list = (List<SelectListItem>) _farm.GetProducts().Select(x => new SelectListItem()
+            var list = (List<SelectListItem>) _farm.GetProducts().Select(x => new SelectListItem
             {
                 Value = x.Name,
                 Text = x.Name
 
             });
-            list.Add(new SelectListItem() {Text = "Select a Product", Value = string.Empty,Selected = true});
+            list.Add(new SelectListItem {Text = "Select a Product", Value = string.Empty,Selected = true});
             products.Products = list;
             return View(products);
         }
@@ -282,7 +308,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 var baseUnitList = _farm.GetBaseUnitList(null);
                 ViewBag.BaseUnitList = baseUnitList;
                 
-                _toastNotification.AddErrorToastMessage("Need to select a Base Unit", new ToastrOptions()
+                _toastNotification.AddErrorToastMessage("Need to select a Base Unit", new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -294,7 +320,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 var farm = _farm.AddProduct(model,GetCurrentUserAsync().Result.UserName).Result;
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
@@ -302,7 +328,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 }
                 else
                 {
-                    _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
@@ -345,7 +371,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
@@ -353,7 +379,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 }
                 else
                 {
-                    _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
@@ -364,7 +390,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             }
             else
             {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+                _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -379,7 +405,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         {
             if (id == null)
             {
-                _toastNotification.AddErrorToastMessage("Need to select a Base Unit", new ToastrOptions()
+                _toastNotification.AddErrorToastMessage("Need to select a Base Unit", new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -404,7 +430,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         [HttpPost,ValidateAntiForgeryToken]
         public IActionResult AddProductsToCostCenterPost(ProductCostCenterViewModel model, params string[] selectedProducts)
         {
-            if (selectedProducts.Count() == 0)
+            if (!selectedProducts.Any())
             {
                 _toastNotification.AddWarningToastMessage("Need to select a product", new ToastrOptions()
                 {
@@ -421,14 +447,14 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var farm = _farm.AddProductsToCostCenter(model,GetCurrentUserAsync().Result.UserName,selectedProducts).Result;
             if (farm.Succeeded)
             {
-                _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return RedirectToAction(nameof(ListCostCenter));
             }
 
-            _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions()
             {
                 PositionClass = ToastPositions.TopCenter
             });
@@ -438,17 +464,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             ViewBag.Code = costCenter.Code;
             return View(nameof(AddProductsToCostCenter),model);
         }
-
-        /*
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddProduct(FormCollection form)
-        {
-            var products = form["key"].ToArray();
-            var values = form["values"].ToArray();
-
-            return View();
-        }
-        */
+        
         public IActionResult GetConsumptionReport()
         {
             var list = _farm.GetWarehouseListNames();

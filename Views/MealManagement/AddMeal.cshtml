@@ -8,7 +8,7 @@
                     <h2 class="m-b-0 text-themecolor">Add Meal Consumption</h2>
                 </div>
                 <div class="card-body">
-                    <form class="form-horizontal  p-t-20" asp-controller="MealManagement" asp-action="AddMeal" method="Post">
+                    <form autocomplete="off" class="form-horizontal  p-t-20" asp-controller="MealManagement" asp-action="AddMeal" method="Post">
                         <div class="form-group row">
                             <label for="name" class="control-label col-sm-2 text-right"></label>
                             <div class="col-sm-4">
@@ -25,7 +25,7 @@
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <input name="key" type="hidden" class="form-control" value="@item.Name">
-                                        <input name="value" type="number" class="form-control" value="0" min="0" step="1">
+                                        <input name="value" type="number" class="form-control" value="0.000" min="0.000" step="0.001">
                                     </div>
                                 </div>
                             </div>

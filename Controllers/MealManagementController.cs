@@ -51,20 +51,18 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var farm = _farm.SaveConsumption(model.CostCenterId, products, values, GetCurrentUserAsync().Result.UserName,null).Result;
             if (farm.Succeeded)
             {
-                _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return RedirectToAction(nameof(SelectCostCenter));
             }
-            else
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
             {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
-                {
-                    PositionClass = ToastPositions.TopCenter
-                });
-                return View(nameof(AddMeal),model);
-            }
+                PositionClass = ToastPositions.TopCenter
+            });
+            return View(nameof(AddMeal),model);
         }
 
         public IActionResult SelectCostCenter()
@@ -78,7 +76,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         {
             if (model.CostCenterId == 0)
             {
-                _toastNotification.AddWarningToastMessage("Need to select a Cost Center", new ToastrOptions()
+                _toastNotification.AddWarningToastMessage("Need to select a Cost Center", new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -86,7 +84,6 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 return View();
             }
             var costCenter = _farm.GetCostCenterById(model.CostCenterId);
-            //var prodlist = _farm.GetProductList(model.CostCenterId).ToList();
 
             return RedirectToAction(nameof(AddMeal),new {id=costCenter.Id});
         }

@@ -52,20 +52,18 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var farm = _farm.SaveConsumption(model.CostCenterId, products, values, GetCurrentUserAsync().Result.UserName,model.LateDateTime).Result;
             if (farm.Succeeded)
             {
-                _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return RedirectToAction(nameof(SelectMealCostCenter));
             }
-            else
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
             {
-                _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions
-                {
-                    PositionClass = ToastPositions.TopCenter
-                });
-                return View(nameof(AddSpecialMeal),model);
-            }
+                PositionClass = ToastPositions.TopCenter
+            });
+            return View(nameof(AddSpecialMeal),model);
         }
 
         public IActionResult SelectMealCostCenter()
@@ -87,7 +85,6 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 return View();
             }
             var costCenter = _farm.GetCostCenterById(model.CostCenterId);
-            //var prodlist = _farm.GetProductList(model.CostCenterId).ToList();
 
             return RedirectToAction(nameof(AddSpecialMeal),new {id=costCenter.Id});
         }
@@ -146,7 +143,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 var farm = _farm.SaveConsumptionEdit(model.ConsumptionId, products, values, GetCurrentUserAsync().Result.UserName).Result;
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
@@ -154,7 +151,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 }
                 else
                 {
-                    _toastNotification.AddWarningToastMessage(farm.ToasterMessage, new ToastrOptions()
+                    _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions()
                     {
                         PositionClass = ToastPositions.TopCenter
                     });

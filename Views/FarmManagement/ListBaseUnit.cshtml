@@ -121,7 +121,23 @@
                             });
         },
             enabled: false
-            }
+            },
+                    {
+                        text: 'Edit',
+                        action: function (e, dt, node, config) {
+                            var rowData = dt.row({ selected: true }).data();
+                            if (rowData == null) {
+                                $.alert({
+                                    title: 'No base unit selected!',
+                                    content: 'No base unit has been selected, to continue please select a cost center.'
+                                });
+                            }
+                            else {
+                                window.location.href = '/get/baseunit/' + rowData.id;
+                            }
+                        },
+                        enabled: false
+                    }
             ]
         });
         
