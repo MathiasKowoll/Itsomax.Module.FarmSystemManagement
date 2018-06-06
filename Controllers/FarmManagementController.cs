@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NToastNotify;
-//using NToastNotify.Libraries;
 
 namespace Itsomax.Module.FarmSystemManagement.Controllers
 {
@@ -25,8 +24,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IManageExcelFile _excel;
 
-        public FarmManagementController(IManageFarmInterface farm,IToastNotification toastNotification, UserManager<User> userManager,
-            IManageExcelFile excel)
+        public FarmManagementController(IManageFarmInterface farm,IToastNotification toastNotification, 
+            UserManager<User> userManager,IManageExcelFile excel)
         {
             _farm = farm;
             _toastNotification = toastNotification;
@@ -371,7 +370,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 if (farm.Succeeded)
                 {
-                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
+                    _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
@@ -428,11 +427,12 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         }
 
         [HttpPost,ValidateAntiForgeryToken]
-        public IActionResult AddProductsToCostCenterPost(ProductCostCenterViewModel model, params string[] selectedProducts)
+        public IActionResult AddProductsToCostCenterPost(ProductCostCenterViewModel model
+            , params string[] selectedProducts)
         {
             if (!selectedProducts.Any())
             {
-                _toastNotification.AddWarningToastMessage("Need to select a product", new ToastrOptions()
+                _toastNotification.AddWarningToastMessage("Need to select a product", new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -443,18 +443,19 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 
                 return View(nameof(AddProductsToCostCenter),model);
             }
-            
-            var farm = _farm.AddProductsToCostCenter(model,GetCurrentUserAsync().Result.UserName,selectedProducts).Result;
+
+            var farm = _farm.AddProductsToCostCenter(model, GetCurrentUserAsync().Result.UserName, selectedProducts)
+                .Result;
             if (farm.Succeeded)
             {
-                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
                 return RedirectToAction(nameof(ListCostCenter));
             }
 
-            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions()
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
             {
                 PositionClass = ToastPositions.TopCenter
             });
@@ -478,7 +479,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         {
             if (model.WarehouseName == "Select a Warehouse")
             {
-                _toastNotification.AddInfoToastMessage("You did not select a warehouse", new ToastrOptions()
+                _toastNotification.AddInfoToastMessage("You did not select a warehouse", new ToastrOptions
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
@@ -490,24 +491,30 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 			var report = _farm.ConsumptionReport(model.ConsumptionDate,model.Folio,model.WarehouseName).ToList();
 			if(!report.Any())
 			{
-				_toastNotification.AddInfoToastMessage("There is no consumption report for date "+model.ConsumptionDate.ToString("MM-dd-yyyy"), new ToastrOptions()
-                {
-                    PositionClass = ToastPositions.TopCenter
-                });
+			    _toastNotification.AddInfoToastMessage(
+			        "There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"),
+			        new ToastrOptions
+			        {
+			            PositionClass = ToastPositions.TopCenter
+			        });
 			    var list2 = _farm.GetWarehouseListNames();
 			    ViewBag.WarehouseList = list2;
 			    ViewBag.Url = "";
 				return View();
 			}
-			var excel = _excel.GenerateExcelName("SalidaSoftland"+model.WarehouseName,model.ConsumptionDate,model.WarehouseName);
+
+            var excel = _excel.GenerateExcelName("SalidaSoftland" + model.WarehouseName, model.ConsumptionDate,
+                model.WarehouseName);
 			var excelPath = excel[0];
 			var excelName = excel[1];
 			if(excel[0] == null)
 			{
-				_toastNotification.AddInfoToastMessage("There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"), new ToastrOptions()
-                {
-                    PositionClass = ToastPositions.TopCenter
-                });
+			    _toastNotification.AddInfoToastMessage(
+			        "There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"),
+			        new ToastrOptions
+			        {
+			            PositionClass = ToastPositions.TopCenter
+			        });
                 var list2 = _farm.GetWarehouseListNames();
                 ViewBag.WarehouseList = list2;
                 ViewBag.Url = "";
@@ -518,8 +525,10 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 			using (var fs = new FileStream(excelPath,FileMode.Create,FileAccess.ReadWrite))
             {
                 var workbook = new XSSFWorkbook();
-                //var excelSheet = workbook.GetSheetAt(0);
-                //var headerRow = excelSheet.GetRow(0);
+                var format = workbook.CreateDataFormat();
+                var style = workbook.CreateCellStyle();
+                style.DataFormat = format.GetFormat("text");
+                
                 var cellCount = 9;
                 var i = 1;
                 ISheet excelSheet = workbook.CreateSheet("Entrada");
@@ -547,7 +556,9 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                                 row.CreateCell(j).SetCellValue(item.Folio);
                                 break;
                             case 2:
-                                row.CreateCell(j).SetCellValue("'" + item.GeneratedDate);
+                                var cell = row.CreateCell(j, CellType.String);
+                                cell.SetCellValue(item.GeneratedDate);
+                                cell.CellStyle = style;
                                 break;
                             case 3:
                                 row.CreateCell(j).SetCellValue(item.WarehouseOut);
@@ -565,20 +576,23 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                                 row.CreateCell(j).SetCellValue(item.BaseUnit);
                                 break;
                             case 8:
-                                row.CreateCell(j).SetCellValue(item.Amount);
+                                row.CreateCell(j).SetCellValue((double) item.Amount);
                                 break;
                         }
+
                     }
 
                     i++;
                 }
                 workbook.Write(fs);
             }
-            
+
             var list = _farm.GetWarehouseListNames();
-            
             ViewBag.WarehouseList = list;
             ViewBag.Url = "/Temp/" + excelName;
+            
+            
+            
 			return View();
         }
 

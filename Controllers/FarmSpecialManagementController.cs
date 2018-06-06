@@ -20,7 +20,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         private readonly IToastNotification _toastNotification;
         private readonly UserManager<User> _userManager;
 
-        public FarmSpecialManagementController(IManageFarmInterface farm,IToastNotification toastNotification, UserManager<User> userManager)
+        public FarmSpecialManagementController(IManageFarmInterface farm,IToastNotification toastNotification, 
+            UserManager<User> userManager)
         {
             _farm = farm;
             _toastNotification = toastNotification;
@@ -49,7 +50,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             string[] products = form["key"].ToArray();
             string[] values = form["value"].ToArray();
 
-            var farm = _farm.SaveConsumption(model.CostCenterId, products, values, GetCurrentUserAsync().Result.UserName,model.LateDateTime).Result;
+            var farm = _farm.SaveConsumption(model.CostCenterId, products, values,
+                GetCurrentUserAsync().Result.UserName, model.LateDateTime).Result;
             if (farm.Succeeded)
             {
                 _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
@@ -140,7 +142,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 string[] products = form["key"].ToArray();
                 string[] values = form["value"].ToArray();
 
-                var farm = _farm.SaveConsumptionEdit(model.ConsumptionId, products, values, GetCurrentUserAsync().Result.UserName).Result;
+                var farm = _farm.SaveConsumptionEdit(model.ConsumptionId, products, values,
+                    GetCurrentUserAsync().Result.UserName).Result;
                 if (farm.Succeeded)
                 {
                     _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions()
