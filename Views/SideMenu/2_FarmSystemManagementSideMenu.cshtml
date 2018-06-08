@@ -1,13 +1,12 @@
 ﻿@if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("MealManagement")) || User.IsInRole("Admin")))
 {
-    <hr class="m-t-0 m-b-40">
     <li class="nav-small-cap">COW MEAL MANAGEMENT</li>
 }
 @if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("MealManagement")) || User.IsInRole("Admin")))
 {
     <li>
         <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
-            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Meal Management</span>
+            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Meal Mngt.</span>
         </a>
         <ul aria-expanded="false" class="collapse">
             <li><a href="/MealManagement/SelectCostCenter">Enter new Meal</a></li>
@@ -15,16 +14,16 @@
         </ul>
     </li>
 }
+<hr class="m-t-0 m-b-40">
 @if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmSpecialManagement")) || User.IsInRole("Admin")))
 {
-    <hr class="m-t-0 m-b-40">
     <li class="nav-small-cap">SPECIAL MANAGEMENT</li>
 }
 @if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmSpecialManagement")) || User.IsInRole("Admin")))
 {
     <li>
         <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
-            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Special Management</span>
+            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Special Mngt.</span>
         </a>
         <ul aria-expanded="false" class="collapse">
             <li><a href="/FarmSpecialManagement/SelectMealCostCenter">Enter new Meal</a></li>
@@ -35,16 +34,16 @@
         </ul>
     </li>
 }
+<hr class="m-t-0 m-b-40">
 @if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmManagement")) || User.IsInRole("Admin")))
 {
-    <hr class="m-t-0 m-b-40">
     <li class="nav-small-cap">FARM MANAGEMENT</li>
 }
 @if ((User.HasClaim(c => c.Value.ToString() == "HasAccess" && c.Type.Contains("FarmManagement")) || User.IsInRole("Admin")))
 {
     <li>
         <a href="#" class="has-arrow waves-effect waves-dark" aria-expanded="false">
-            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Farm Management</span>
+            <i class="mdi mdi-food-apple"></i> <span class="hide-menu">Farm Mngt.</span>
         </a>
         <ul>
             <li>
@@ -90,3 +89,4 @@
         </ul>
     </li>
 }
+<hr class="m-t-0 m-b-40">
