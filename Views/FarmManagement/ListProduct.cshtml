@@ -31,7 +31,7 @@
     <script>
         $(document).ready(function () {
             var table = $('#product').DataTable({
-                dom: 'Bfrtip',
+                dom: 'Bfrtlp',
                 ajax: {
                     url: '/get/products/json/',
                     dataSrc: ''
@@ -55,10 +55,10 @@
 
                         }
                     },
-                    { "data": "updatedOn" },
+                    { "data": "updatedOn" }
                 ],
                 paging: true,
-                lengthChange: false,
+                lengthChange: true,
                 searching: true,
                 ordering: true,
                 info: true,
@@ -77,7 +77,7 @@
                     {
                         text: 'Enable/Disable',
                         action: function (e, dt, node, config) {
-                            var rowData = dt.row({ selected: true }).data()
+                            var rowData = dt.row({ selected: true }).data();
 
                             if (rowData == null) {
                                 $.alert({
@@ -87,14 +87,14 @@
                             }
                                 
                             var title = '';
-                            var content = ''
+                            var content = '';
                             if (rowData.active == false) {
-                                titleConfirm = 'Enable product'
-                                contentConfirm = 'enable'
+                                titleConfirm = 'Enable product';
+                                contentConfirm = 'enable';
                             }
                             else {
-                                titleConfirm = 'Disable product'
-                                contentConfirm = 'disable'
+                                titleConfirm = 'Disable product';
+                                contentConfirm = 'disable';
                             }
                             $.confirm({
                                 title: titleConfirm,
@@ -125,7 +125,7 @@
             {
                 text: 'Edit',
                 action: function (e, dt, node, config) {
-                    var rowData = dt.row({ selected: true }).data()
+                    var rowData = dt.row({ selected: true }).data();
                     if (rowData == null) {
                         $.alert({
                             title: 'No product selected!',
@@ -133,7 +133,7 @@
                         });
                     }
                     else {
-                        window.location.href = '/get/product/' + rowData.id
+                        window.location.href = '/get/product/' + rowData.id;
                     }
                 },
                 enabled: false

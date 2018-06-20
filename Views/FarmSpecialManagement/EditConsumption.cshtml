@@ -23,9 +23,9 @@
                             <div class="form-group row">
                                 <label for="name" class="control-label col-sm-2 text-right">@item.Name (@item.BaseUnit)</label>
                                 <div class="col-sm-4">
-                                    <div class="input-group">
+                                    <div class="input-group" lang="en-US">
                                         <input name="key" type="hidden" class="form-control" value="@item.Name">
-                                        <input name="value" type="number" class="form-control" value="@item.Value" min="0.000" step="0.001">
+                                        <input id="decimalField" name="value" type="number" class="form-control" value="@item.Value" min="0.000" step="0.001">
                                     </div>
                                 </div>
                             </div>
@@ -47,4 +47,26 @@
 
 @section scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script type="text/javascript">
+        $(function () {
+            $("input[id*='decimalField']").keydown(function (event) {
+
+
+                if (event.shiftKey == true) {
+                    event.preventDefault();
+                }
+
+                if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+
+                } else {
+                    event.preventDefault();
+                }
+            
+                if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                    event.preventDefault();
+
+            });
+        });
+    </script>
+}
 }

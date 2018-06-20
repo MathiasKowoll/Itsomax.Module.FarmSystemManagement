@@ -528,6 +528,10 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 var format = workbook.CreateDataFormat();
                 var style = workbook.CreateCellStyle();
                 style.DataFormat = format.GetFormat("text");
+
+                var numberFormat = workbook.CreateDataFormat();
+                var numberStyle = workbook.CreateCellStyle();
+                numberStyle.DataFormat = numberFormat.GetFormat("#.###");
                 
                 var cellCount = 9;
                 var i = 1;
@@ -576,7 +580,10 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                                 row.CreateCell(j).SetCellValue(item.BaseUnit);
                                 break;
                             case 8:
-                                row.CreateCell(j).SetCellValue((double) item.Amount);
+                                var celln = row.CreateCell(j, CellType.Numeric);
+                                celln.SetCellValue((double) item.Amount);
+                                celln.CellStyle = numberStyle;
+                                //row.CreateCell(j).SetCellValue((double) item.Amount);
                                 break;
                         }
 
@@ -708,7 +715,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         public IActionResult LoadInitial()
         {
             _farm.LoadInitialDataFarm();
-            return Ok();
+            return RedirectToAction("WelcomPage", "Admin");
         }
 
         //#Helper Region

@@ -31,7 +31,7 @@
     <script>
         $(document).ready(function () {
             var table = $('#consumption').DataTable({
-                dom: 'Bfrtip',
+                dom: 'Bfrtlp',
                 ajax: {
                     url: '/get/consumption/json/',
                     dataSrc: ''
@@ -44,7 +44,7 @@
                     { "data": "consumptionEntryDate" }
                 ],
                 paging: true,
-                lengthChange: false,
+                lengthChange: true,
                 searching: true,
                 ordering: true,
                 info: true,
@@ -63,7 +63,7 @@
                     {
                         text: 'Edit',
                         action: function (e, dt, node, config) {
-                            var rowData = dt.row({ selected: true }).data()
+                            var rowData = dt.row({ selected: true }).data();
                             if (rowData == null) {
                                 $.alert({
                                     title: 'No cost center selected!',
