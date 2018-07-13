@@ -13,17 +13,27 @@
                         <h3 class="box-title">Generate Report</h3>
                         <hr class="m-t-0 m-b-40">
                         <div class="form-group row">
-                            <label for="name" class="control-label col-sm-2 text-right">Select Date</label>
+                            <label for="name" class="control-label col-sm-2 text-right">Select From Date</label>
                             <div class="col-sm-2">
                                 <div class="input-group clockpicker">
-                                    <input id="datepicker-autoclose" asp-for="ConsumptionDate" type="text" class="form-control" placeholder="yyyy/mm/dd">
+                                    <input id="datepicker-autoclose" asp-for="FromConsumptionDate" type="text" class="form-control" placeholder="yyyy/mm/dd">
                                     <div class="input-group-append">
                                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8">
-                                <span asp-validation-for="ConsumptionDate" class="text-danger"></span>
+                            <label for="name" class="control-label col-sm-2 text-right">Select From Date</label>
+                            <div class="col-sm-2">
+                                <div class="input-group clockpicker">
+                                    <input id="datepicker-autoclose2" asp-for="ToConsumptionDate" type="text" class="form-control" placeholder="yyyy/mm/dd">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <span asp-validation-for="FromConsumptionDate" class="text-danger"></span>
+                                <span asp-validation-for="ToConsumptionDate" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group row align-items-center">
@@ -85,6 +95,11 @@
                 autoclose: true,
                 todayHighlight: true,
                 format: 'yyyy/mm/dd'
+        });
+        jQuery('#datepicker-autoclose2').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'yyyy/mm/dd'
         });
     </script>
 } 

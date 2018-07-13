@@ -426,6 +426,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             return View(model);
         }
 
+
         [HttpPost,ValidateAntiForgeryToken]
         public IActionResult AddProductsToCostCenterPost(ProductCostCenterViewModel model
             , params string[] selectedProducts)
@@ -465,7 +466,74 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             ViewBag.Code = costCenter.Code;
             return View(nameof(AddProductsToCostCenter),model);
         }
-        
+
+        [Route("/get/indexcostcenterproducts/{id}")]
+        public IActionResult SetIndexProductsToCostCenter(long? id)
+        {
+            if (id == null)
+            {
+                _toastNotification.AddErrorToastMessage("Need to select a Base Unit", new ToastrOptions
+                {
+                    PositionClass = ToastPositions.TopCenter
+                });
+                return RedirectToAction(nameof(ListCostCenter));
+            }
+
+            var costCenter = _farm.GetCostCenterById(id.Value);
+
+            var model = new ProductCostCenterViewModel
+            {
+                CostCenterId = costCenter.Id,
+                Name = _farm.GetCostCenterProductName(costCenter.Id),
+                Active = _farm.GetCostCenterProductActive(costCenter.Id)
+            };
+
+            model.Products = _farm.GetSelectListProducts(costCenter.Id);
+            ViewBag.Name = costCenter.Name;
+            ViewBag.Code = costCenter.Code;
+            return View(model);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult SetIndexProductsToCostCenterPost(ProductCostCenterViewModel model
+            , params string[] selectedProducts)
+        {
+            if (!selectedProducts.Any())
+            {
+                _toastNotification.AddWarningToastMessage("Need to select a product", new ToastrOptions
+                {
+                    PositionClass = ToastPositions.TopCenter
+                });
+                var costCenter2 = _farm.GetCostCenterById(model.CostCenterId);
+                model.Products = _farm.GetSelectListProducts(costCenter2.Id);
+                ViewBag.Name = costCenter2.Name;
+                ViewBag.Code = costCenter2.Code;
+
+                return View(nameof(AddProductsToCostCenter), model);
+            }
+
+            var farm = _farm.AddProductsToCostCenter(model, GetCurrentUserAsync().Result.UserName, selectedProducts)
+                .Result;
+            if (farm.Succeeded)
+            {
+                _toastNotification.AddSuccessToastMessage(farm.OkMessage, new ToastrOptions
+                {
+                    PositionClass = ToastPositions.TopCenter
+                });
+                return RedirectToAction(nameof(ListCostCenter));
+            }
+
+            _toastNotification.AddWarningToastMessage(farm.Errors, new ToastrOptions
+            {
+                PositionClass = ToastPositions.TopCenter
+            });
+            var costCenter = _farm.GetCostCenterById(model.CostCenterId);
+            model.Products = _farm.GetSelectListProducts(costCenter.Id);
+            ViewBag.Name = costCenter.Name;
+            ViewBag.Code = costCenter.Code;
+            return View(nameof(AddProductsToCostCenter), model);
+        }
+
         public IActionResult GetConsumptionReport()
         {
             var list = _farm.GetWarehouseListNames();
@@ -488,11 +556,12 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 ViewBag.Url = "";
                 return View();
             }
-			var report = _farm.ConsumptionReport(model.ConsumptionDate,model.Folio,model.WarehouseName).ToList();
+			var report = _farm.ConsumptionReport(model.FromConsumptionDate,model.ToConsumptionDate,model.Folio,model.WarehouseName).ToList();
 			if(!report.Any())
 			{
 			    _toastNotification.AddInfoToastMessage(
-			        "There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"),
+			        "There is no consumption report between date " + model.FromConsumptionDate.ToString("MM-dd-yyyy") +" and " 
+			        +model.ToConsumptionDate.ToString("MM-dd-yyyy"),
 			        new ToastrOptions
 			        {
 			            PositionClass = ToastPositions.TopCenter
@@ -503,14 +572,15 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 				return View();
 			}
 
-            var excel = _excel.GenerateExcelName("SalidaSoftland" + model.WarehouseName, model.ConsumptionDate,
+            var excel = _excel.GenerateExcelName("SalidaSoftland" + model.WarehouseName, model.ToConsumptionDate,
                 model.WarehouseName);
 			var excelPath = excel[0];
 			var excelName = excel[1];
 			if(excel[0] == null)
 			{
 			    _toastNotification.AddInfoToastMessage(
-			        "There is no consumption report for date " + model.ConsumptionDate.ToString("MM-dd-yyyy"),
+			        "There is no consumption report between date " + model.FromConsumptionDate.ToString("MM-dd-yyyy") +" and " 
+			        +model.ToConsumptionDate.ToString("MM-dd-yyyy"),
 			        new ToastrOptions
 			        {
 			            PositionClass = ToastPositions.TopCenter
@@ -715,7 +785,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         public IActionResult LoadInitial()
         {
             _farm.LoadInitialDataFarm();
-            return RedirectToAction("WelcomPage", "Admin");
+            return Redirect("/Admin/Welcome");
         }
 
         //#Helper Region
