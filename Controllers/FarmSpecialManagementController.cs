@@ -65,7 +65,13 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 PositionClass = ToastPositions.TopCenter
             });
-            return View(nameof(AddSpecialMeal),model);
+            var newConsumption = new ConsumptionViewModel
+            {
+                CostCenterId = model.CostCenterId,
+                CostCenterName = model.CostCenterName,
+                ProductLists = _farm.GetProductListFailed(model.CostCenterId, products, values).ToList()
+            };
+            return View(nameof(AddSpecialMeal), newConsumption);
         }
 
         public IActionResult SelectMealCostCenter()
@@ -137,11 +143,10 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         [HttpPost,ValidateAntiForgeryToken]
         public IActionResult EditConsumption(ConsumptionEditViewModel model,IFormCollection form)
         {
+            string[] products = form["key"].ToArray();
+            string[] values = form["value"].ToArray();
             if (ModelState.IsValid)
             {
-                string[] products = form["key"].ToArray();
-                string[] values = form["value"].ToArray();
-
                 var farm = _farm.SaveConsumptionEdit(model.ConsumptionId, products, values,
                     GetCurrentUserAsync().Result.UserName).Result;
                 if (farm.Succeeded)
@@ -158,10 +163,22 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
-                    return View(model);
+                    var newConsumption = new ConsumptionEditViewModel
+                    {
+                        CostCenterName = model.CostCenterName,
+                        ConsumptionId = model.ConsumptionId,
+                        ProductListEdit = _farm.GetProductListEditFailed(model.ConsumptionId,products,values).ToList()
+                    };
+                    return View(newConsumption);
                 }
             }
-            return View(model);
+            var newConsumptionState = new ConsumptionEditViewModel
+            {
+                CostCenterName = model.CostCenterName,
+                ConsumptionId = model.ConsumptionId,
+                ProductListEdit = _farm.GetProductListEditFailed(model.ConsumptionId, products, values).ToList()
+            };
+            return View(newConsumptionState);
         }
         
         //#help region 

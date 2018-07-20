@@ -25,7 +25,7 @@
                                 <div class="col-sm-4">
                                     <div class="input-group" lang="en-US">
                                         <input name="key" type="hidden" class="form-control" value="@item.Name">
-                                        <input id="decimalField" name="value" type="text" class="form-control" placeholder="0.000" min="0.000" step="0.001">
+                                        <input id="decimalField" name="value" type="text" class="form-control" value="@item.Value" placeholder="0.000" min="0.000" step="0.001">
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +38,8 @@
                             </div>
                         </div>
                         
-                        
+                        <input type="hidden" asp-for="CostCenterId" />
+                        <input type="hidden" asp-for="CostCenterName"/>
                     </form>
                 </div>
             </div>

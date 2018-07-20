@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="form-group row align-items-center">
-                            <input id="name" asp-for="CostCenterId" type="hidden" class="form-control"/>
+                            <input id="name" asp-for="CostCenterId" type="hidden" class="form-control" />
                         </div>
                         @foreach (var item in @Model.ProductLists)
                         {
@@ -39,7 +39,7 @@
                                 <div class="col-sm-4">
                                     <div class="input-group" lang="en-US">
                                         <input name="key" type="hidden" class="form-control" value="@item.Name">
-                                        <input id="decimalField" name="value" type="text" class="form-control" placeholder="0.000" min="0.000" step="0.001">
+                                        <input id="decimalField" name="value" type="text" class="form-control" value="@item.Value" placeholder="0.000" min="0.000" step="0.001">
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +51,8 @@
                                 <a asp-controller="FarmSpecialManagement" asp-action="SelectMealCostCenter" class="btn btn-info waves-effect waves-light">Cancel</a>
                             </div>
                         </div>
-                        
+                        <input type="hidden" asp-for="CostCenterId" />
+                        <input type="hidden" asp-for="CostCenterName" />
                     </form>
                 </div>
             </div>

@@ -49,6 +49,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             string[] products = form["key"].ToArray();
             string[] values = form["value"].ToArray();
 
+
             var farm = _farm.SaveConsumption(model.CostCenterId, products, values,
                 GetCurrentUserAsync().Result.UserName, null).Result;
             if (farm.Succeeded)
@@ -64,7 +65,13 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 PositionClass = ToastPositions.TopCenter
             });
-            return View(nameof(AddMeal),model);
+            var newConsumption = new ConsumptionViewModel
+            {
+                CostCenterId = model.CostCenterId,
+                CostCenterName = model.CostCenterName,
+                ProductLists = _farm.GetProductListFailed(model.CostCenterId,products,values).ToList()
+            };
+            return View(nameof(AddMeal),newConsumption);
         }
 
         public IActionResult SelectCostCenter()
