@@ -36,8 +36,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 CostCenterName = costCenter.Name,
                 CostCenterId = costCenter.Id,
-                ProductLists = prodList,
-                LateDateTime = DateTimeOffset.Now
+                ProductLists = prodList
             };
             
             return View(consumptionList);

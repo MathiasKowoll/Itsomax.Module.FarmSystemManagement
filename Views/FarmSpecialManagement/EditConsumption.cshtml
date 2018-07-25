@@ -8,7 +8,7 @@
                     <h2 class="m-b-0 text-white">Edit Consumption</h2>
                 </div>
                 <div class="card-body">
-                    <form autocomplete="off" class="form-horizontal  p-t-20" asp-controller="FarmSpecialManagement" asp-action="EditConsumption" method="Post">
+                    <form id="dynamicForm" autocomplete="off" class="form-horizontal  p-t-20" asp-controller="FarmSpecialManagement" asp-action="EditConsumption" method="Post" novalidate>
                         <div class="form-group row">
                             <label for="name" class="control-label col-sm-2 text-right"></label>
                             <div class="col-sm-4">
@@ -25,8 +25,13 @@
                                 <div class="col-sm-4">
                                     <div class="input-group" lang="en-US">
                                         <input name="key" type="hidden" class="form-control" value="@item.Name">
-                                        <input id="decimalField" name="value" type="number" class="form-control" placeholder="0.000" value="@item.Value" min="0.000" step="0.001">
+                                        <input id="decimalField" name="value" type="number" class="form-control"  placeholder="0.000" 
+                                               value="@item.Value" min="0.000" step="0.001" required data-validation-required-message="This field is required"
+                                               data-validation-number-message="Maximum 3 decimals" >
                                     </div>
+                                </div>
+                                <div class="col-sm-6 text-center">
+                                    <small><span class="help-block"></span></small>
                                 </div>
                             </div>
                         }
@@ -37,6 +42,7 @@
                                 <a asp-controller="FarmSpecialManagement" asp-action="ListConsumption" class="btn btn-info waves-effect waves-light">Cancel</a>
                             </div>
                         </div>
+                        
                         <input type="hidden" asp-for="ConsumptionId" />
                         <input type="hidden" asp-for="CostCenterName" />
                     </form>
@@ -48,6 +54,15 @@
 
 @section scripts{
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        ! function(window, document, $) {
+            "use strict";
+            $("input,select,textarea").not("[type=submit]").jqBootstrapValidation(), $(".skin-square input").iCheck({
+                checkboxClass: "icheckbox_square-green",
+                radioClass: "iradio_square-green"
+            }), $(".touchspin").TouchSpin(), $(".switchBootstrap").bootstrapSwitch();
+        }(window, document, jQuery);
+    </script>
     <script type="text/javascript">
         $(function () {
             $("input[id*='decimalField']").keydown(function (event) {
@@ -69,5 +84,16 @@
             });
         });
     </script>
-}
+    <script>
+        $.get({
+            url: location.protocol + "//" + location.host + "/FarmSpecialManagement/EditConsumption/" + "@Model.ConsumptionId",
+            dataType: "html",
+            error: function(jqXHR, textStatus, errorThrown) {
+            },
+            success: function(newInputHTML) {
+                var form = document.getElementById("dynamicForm");
+                $(form).removeData("validator").removeData("unobtrusiveValidation"); // Added by jQuery Unobtrusive Validation
+            }
+        });
+    </script>
 }

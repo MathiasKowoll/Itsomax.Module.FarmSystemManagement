@@ -533,6 +533,11 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             ViewBag.Code = costCenter.Code;
             return View(nameof(AddProductsToCostCenter), model);
         }
+        
+        public JsonResult PreviewReport(GenerateConsumptionReportViewModel model)
+        {
+            return Json(_farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate, model.Folio, model.WarehouseName).ToList());
+        }
 
         public IActionResult GetConsumptionReport()
         {
@@ -542,6 +547,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
 			ViewBag.Url = "";
             return View();
         }
+
 		[HttpPost,ValidateAntiForgeryToken]
         public IActionResult GetConsumptionReport(GenerateConsumptionReportViewModel model)
         {
@@ -667,8 +673,6 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var list = _farm.GetWarehouseListNames();
             ViewBag.WarehouseList = list;
             ViewBag.Url = "/Temp/" + excelName;
-            
-            
             
 			return View();
         }
