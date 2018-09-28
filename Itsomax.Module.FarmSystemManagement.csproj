@@ -1,19 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RuntimeFrameworkVersion>2.1.2</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.3</RuntimeFrameworkVersion>
     <PreserveCompilationContext>false</PreserveCompilationContext>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <OutputType>Library</OutputType>
     <Description>Module to manage users, roles and permitions over modules</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.NETCore.App" Version="2.1.2" />
+    <PackageReference Update="Microsoft.NETCore.App" Version="2.1.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Itsomax.Module.FarmSystemCore\Itsomax.Module.FarmSystemCore.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Controllers\MedicalManagementController.cs" />
   </ItemGroup>
 </Project>

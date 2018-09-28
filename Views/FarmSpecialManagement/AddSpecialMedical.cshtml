@@ -17,6 +17,21 @@
                             <p class="form-control-static"> Meal Add for @Model.CostCenterName </p>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="name" class="control-label col-sm-2 text-right">Select Date</label>
+                        <div class="col-sm-2">
+                            <div class="input-group clockpicker">
+                                <input id="datepicker-autoclose" name="LateDateTime" type="text" class="form-control" placeholder="yyyy/mm/dd" 
+                                       value="" required data-validation-required-message="Date is required">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <small><span class="help-block"></span></small>
+                        </div>
+                    </div>
                     <br />
                     <datalist id="productinputselect">
                         @foreach (var item in @Model.ProductLists)
@@ -137,5 +152,12 @@
             }
         });
     </script>
-    
+    <script>
+        jQuery('#datepicker-autoclose').datepicker({
+            autoclose: true,
+            todayHighlight: true,
+            format: 'yyyy/mm/dd'
+        });
+    </script>
+
 }

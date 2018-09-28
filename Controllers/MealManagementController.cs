@@ -32,7 +32,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         public IActionResult AddMeal(long id)
         {
             var costCenter = _farm.GetCostCenterById(id);
-            var prodList = _farm.GetProductList(id).ToList();
+            var prodList = _farm.GetProductList(id,"Meal").ToList();
             var consumptionList = new ConsumptionViewModel
             {
                 CostCenterName = costCenter.Name,
@@ -69,7 +69,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             {
                 CostCenterId = model.CostCenterId,
                 CostCenterName = model.CostCenterName,
-                ProductLists = _farm.GetProductListFailed(model.CostCenterId,products,values).ToList()
+                ProductLists = _farm.GetProductListFailed(model.CostCenterId,"Meal",products,values).ToList()
             };
             return View(nameof(AddMeal),newConsumption);
         }

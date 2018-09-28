@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -296,6 +297,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
         public IActionResult AddProduct()
         {
             ViewBag.BaseUnitList = _farm.GetBaseUnitList(null);
+            ViewBag.ProductTypeList = _farm.GetProductTypeList(null);
             return View();
         }
 
@@ -331,15 +333,15 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
-                    var baseUnitList = _farm.GetBaseUnitList(null);
-                    ViewBag.BaseUnitList = baseUnitList;
+                    ViewBag.BaseUnitList = _farm.GetBaseUnitList(null);
+                    ViewBag.ProductTypeList = _farm.GetProductTypeList(null);
                     return View(nameof(AddProduct),model);
                 }
             }
             else
             {
-                var baseUnitList = _farm.GetBaseUnitList(null);
-                ViewBag.BaseUnitList = baseUnitList;
+                ViewBag.ProductTypeList = _farm.GetProductTypeList(null);
+                ViewBag.BaseUnitList = _farm.GetBaseUnitList(null);
                 return View(nameof(AddProduct),model);
             }
             
@@ -350,11 +352,13 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             var product = _farm.GetProductById(id);
             ViewBag.Code = product.Code;
             ViewBag.BaseUnitList = _farm.GetBaseUnitList(product.Id);
+            ViewBag.ProductTypeList = _farm.GetProductTypeList(product.Id);
             var model = new ProductEditViewModel
             {
                 Id = product.Id,
                 Name = product.Name,
                 BaseUnitId = product.BaseUnitId,
+                ProductTypeId = product.ProductTypeId,
                 Active = product.Active,
                 Code = product.Code,
                 Description = product.Description
@@ -382,8 +386,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                     {
                         PositionClass = ToastPositions.TopCenter
                     });
-                    var baseUnitList = _farm.GetBaseUnitList(null);
-                    ViewBag.BaseUnitList = baseUnitList;
+                    ViewBag.BaseUnitList = _farm.GetBaseUnitList(null);
+                    ViewBag.ProductTypeList = _farm.GetProductTypeList(null);
                     return View(nameof(EditProduct),model);
                 }
             }
@@ -393,8 +397,8 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 {
                     PositionClass = ToastPositions.TopCenter
                 });
-                var baseUnitList = _farm.GetBaseUnitList(null);
-                ViewBag.BaseUnitList = baseUnitList;
+                ViewBag.BaseUnitList = _farm.GetBaseUnitList(null);
+                ViewBag.ProductTypeList = _farm.GetProductTypeList(null);
                 return View(nameof(EditProduct),model);
             }
         }
@@ -533,11 +537,167 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             ViewBag.Code = costCenter.Code;
             return View(nameof(AddProductsToCostCenter), model);
         }
-        
-        public JsonResult PreviewReport(GenerateConsumptionReportViewModel model)
+
+
+        public IActionResult GetPreviewReport()
         {
-            return Json(_farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate, model.Folio, model.WarehouseName).ToList());
+            var list = _farm.GetWarehouseListNames();
+
+            ViewBag.WarehouseList = list;
+            return View();
         }
+
+
+        [HttpPost,ValidateAntiForgeryToken]
+        public IActionResult PreviewReport(GenerateConsumptionReportViewModel model)
+        {
+
+            var report = new ReportPreview
+            {
+                ToConsumptionDate = model.ToConsumptionDate,
+                WarehouseName = model.WarehouseName,
+                FromConsumptionDate = model.FromConsumptionDate,
+                //ReportTable = _farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate, model.WarehouseName,false).ToList(),
+                GenerateReport = false
+            };
+            return RedirectToAction(nameof(PreviewConsumptionReport),report);
+        }
+
+        
+        public IActionResult PreviewConsumptionReport(ReportPreview model)
+        {
+
+            if (model.GenerateReport == true)
+            {
+                var report = _farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate, model.WarehouseName,true).ToList();
+                if (!report.Any())
+                {
+                    _toastNotification.AddInfoToastMessage(
+                        "There is no consumption report between date " + model.FromConsumptionDate.ToString("MM-dd-yyyy") + " and "
+                        + model.ToConsumptionDate.ToString("MM-dd-yyyy"),
+                        new ToastrOptions
+                        {
+                            PositionClass = ToastPositions.TopCenter
+                        });
+                    //var list2 = _farm.GetWarehouseListNames();
+                    //ViewBag.WarehouseList = list2;
+                    ViewBag.Url = "";
+                    model.ReportTable = _farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate,
+                        model.WarehouseName,false).ToList();
+                    return View(model);
+                }
+
+                var excel = _excel.GenerateExcelName("SalidaSoftland" + model.WarehouseName, model.ToConsumptionDate,
+                    model.WarehouseName);
+                var excelPath = excel[0];
+                var excelName = excel[1];
+                if (excel[0] == null)
+                {
+                    _toastNotification.AddInfoToastMessage(
+                        "There is no consumption report between date " + model.FromConsumptionDate.ToString("MM-dd-yyyy") + " and "
+                        + model.ToConsumptionDate.ToString("MM-dd-yyyy"),
+                        new ToastrOptions
+                        {
+                            PositionClass = ToastPositions.TopCenter
+                        });
+                    var list2 = _farm.GetWarehouseListNames();
+                    ViewBag.WarehouseList = list2;
+                    ViewBag.Url = "";
+                    model.ReportTable = _farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate,
+                        model.WarehouseName,false).ToList();
+                    return View(model);
+                }
+                //var file = new FileInfo(excel);
+
+                using (var fs = new FileStream(excelPath, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    var workbook = new XSSFWorkbook();
+                    var format = workbook.CreateDataFormat();
+                    var style = workbook.CreateCellStyle();
+                    style.DataFormat = format.GetFormat("text");
+
+                    var numberFormat = workbook.CreateDataFormat();
+                    var numberStyle = workbook.CreateCellStyle();
+                    numberStyle.DataFormat = numberFormat.GetFormat("#.###");
+
+                    var cellCount = 9;
+                    var i = 1;
+                    ISheet excelSheet = workbook.CreateSheet("Entrada");
+                    var rowHeader = excelSheet.CreateRow(0);
+                    rowHeader.CreateCell(0).SetCellValue("Código Bodega");
+                    rowHeader.CreateCell(1).SetCellValue("Número de Folio Guía de Salida");
+                    rowHeader.CreateCell(2).SetCellValue("Fecha de generación Guía de Salida");
+                    rowHeader.CreateCell(3).SetCellValue("Concepto de Salida a Bodega");
+                    rowHeader.CreateCell(4).SetCellValue("Descripción");
+                    rowHeader.CreateCell(5).SetCellValue("Código Centro de Costo");
+                    rowHeader.CreateCell(6).SetCellValue("Código de Producto");
+                    rowHeader.CreateCell(7).SetCellValue("Código Unidad de Medida");
+                    rowHeader.CreateCell(8).SetCellValue("Cantidad Despachada");
+                    foreach (var item in report)
+                    {
+                        var row = excelSheet.CreateRow(i);
+                        for (var j = 0; j < cellCount; j++)
+                        {
+                            switch (j)
+                            {
+                                case 0:
+                                    row.CreateCell(j).SetCellValue(item.Warehouse);
+                                    break;
+                                case 1:
+                                    row.CreateCell(j).SetCellValue(string.Empty);
+                                    break;
+                                case 2:
+                                    var cell = row.CreateCell(j, CellType.String);
+                                    cell.SetCellValue(item.GeneratedDate);
+                                    cell.CellStyle = style;
+                                    break;
+                                case 3:
+                                    row.CreateCell(j).SetCellValue(item.WarehouseOut);
+                                    break;
+                                case 4:
+                                    row.CreateCell(j).SetCellValue(item.Description);
+                                    break;
+                                case 5:
+                                    row.CreateCell(j).SetCellValue(item.CenterCostCode);
+                                    break;
+                                case 6:
+                                    row.CreateCell(j).SetCellValue(item.ProductCode);
+                                    break;
+                                case 7:
+                                    row.CreateCell(j).SetCellValue(item.BaseUnit);
+                                    break;
+                                case 8:
+                                    var celln = row.CreateCell(j, CellType.Numeric);
+                                    celln.SetCellValue((double)item.Amount);
+                                    celln.CellStyle = numberStyle;
+                                    //row.CreateCell(j).SetCellValue((double) item.Amount);
+                                    break;
+                            }
+
+                        }
+
+                        i++;
+                    }
+                    workbook.Write(fs);
+                }
+
+                //var list = _farm.GetWarehouseListNames();
+                //ViewBag.WarehouseList = list;
+                ViewBag.Url = "/Temp/" + excelName;
+                model.ReportTable = _farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate,
+                    model.WarehouseName,false).ToList();
+                return View(model);
+            }
+
+            ViewBag.Url = "";
+            model.ReportTable = _farm.ConsumptionReport(model.FromConsumptionDate, model.ToConsumptionDate,
+                model.WarehouseName,false).ToList();
+            return View(model);
+        }
+
+
+
+        /*
 
         public IActionResult GetConsumptionReport()
         {
@@ -562,7 +722,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                 ViewBag.Url = "";
                 return View();
             }
-			var report = _farm.ConsumptionReport(model.FromConsumptionDate,model.ToConsumptionDate,model.Folio,model.WarehouseName).ToList();
+			var report = _farm.ConsumptionReport(model.FromConsumptionDate,model.ToConsumptionDate,model.WarehouseName,true).ToList();
 			if(!report.Any())
 			{
 			    _toastNotification.AddInfoToastMessage(
@@ -633,7 +793,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
                                 row.CreateCell(j).SetCellValue(item.Warehouse);
                                 break;
                             case 1:
-                                row.CreateCell(j).SetCellValue(item.Folio);
+                                row.CreateCell(j).SetCellValue(string.Empty);
                                 break;
                             case 2:
                                 var cell = row.CreateCell(j, CellType.String);
@@ -676,6 +836,7 @@ namespace Itsomax.Module.FarmSystemManagement.Controllers
             
 			return View();
         }
+        */
 
         [HttpDelete]
         public IActionResult ActivateLocation(long? id)

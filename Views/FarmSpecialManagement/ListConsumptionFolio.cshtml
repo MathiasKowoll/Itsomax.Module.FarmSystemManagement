@@ -1,0 +1,104 @@
+    <div class="container-fluid">
+        <div class="col-xs-12">
+            <br />
+            <div class="card card-outline-info">
+                <div class="card-header bg-theme">
+                    <h2 class="m-b-0 text-white">Consumption List up to two days ago</h2>
+                </div>
+                <div class="card-body">
+
+                    <table id="consumption" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Folio</th>
+                                <th>Start Date</th>
+                                <th>Final Date</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section scripts{
+    <script src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#consumption').DataTable({
+                dom: 'Bfrtlp',
+                ajax: {
+                    url: '/get/consumptionfolios/json/',
+                    dataSrc: ''
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "initialDate" },
+                    { "data": "finalDate" }
+                ],
+                paging: true,
+                lengthChange: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                select: {
+                    style: 'single'
+                },
+                buttons: [
+                    {
+                        text: 'Get Consumptions by Folio',
+                        action: function (e, dt, node, config) {
+                            var rowData = dt.row({ selected: true }).data();
+                            if (rowData == null) {
+                                $.alert({
+                                    title: 'No cost center selected!',
+                                    content: 'No cost center has been selected, to continue please select a cost center.'
+                                });
+                            }
+                            else {
+                                window.location.href = '/FarmSpecialManagement/ConsumptionFolio/' + rowData.id;
+                            }
+                        },
+                        enabled: false
+                    },
+                    {
+                        text: 'Get Details',
+                        action: function (e, dt, node, config) {
+                            var rowData = dt.row({ selected: true }).data();
+                            if (rowData == null) {
+                                $.alert({
+                                    title: 'No cost center selected!',
+                                    content: 'No cost center has been selected, to continue please select a cost center.'
+                                });
+                            }
+                            else {
+                                window.location.href = '/FarmSpecialManagement/ConsumptionDetail/' + rowData.id;
+                            }
+                        },
+                        enabled: false
+                    },
+            ]
+        });
+        
+        table.on('select', function () {
+            var selectedRows = table.rows({ selected: true }).count();
+            table.button(0).enable(selectedRows == 1);
+            table.button(1).enable(selectedRows == 1);
+        });
+        table.on('deselect', function () {
+            //var unselectedRows = table.rows( {selected: false} ).count();
+            table.button(0).disable();
+            table.button(1).disable();
+        });
+
+
+
+        setInterval(function () {
+            table.ajax.reload();
+        }, 30000);
+            });
+    </script>
+    }

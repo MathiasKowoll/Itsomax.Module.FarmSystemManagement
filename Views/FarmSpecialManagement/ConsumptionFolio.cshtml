@@ -1,0 +1,65 @@
+@model ReportPreview
+<div class="container-fluid">
+    <div class="col-xs-12">
+        <br />
+        <div class="card card-outline-info">
+            <div class="card-header bg-theme">
+                <h2 class="m-b-0 text-white">@ViewBag.HeaderText</h2>
+            </div>
+            <div class="card-body">
+
+                <table id="activity" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>C&oacute;digo Bodega</th>
+                            <th>N&uacute;mero de Folio Gu&iacute;a de Salida </th>
+                            <th>Fecha de Generaci&oacute;n Gu&iacute;a de Salida</th>
+                            <th>Concepto de Salida a Bodega</th>
+                            <th>Descripci&oacute;n</th>
+                            <th>C&oacute;digo Centro de Costo</th>
+                            <th>C&oacute;digo de Producto</th>
+                            <th>C&oacute;digo Unidad de Medida</th>
+                            <th>Cantidad Despachada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ReportTable)
+                    {
+                        <tr>
+                            <td>@item.Warehouse</td>
+                            <td>@item.Folio</td>
+                            <td>@item.GeneratedDate</td>
+                            <td>@item.WarehouseOut</td>
+                            <td>@item.Description</td>
+                            <td>@item.CenterCostCode</td>
+                            <td>@item.ProductCode</td>
+                            <td>@item.BaseUnit</td>
+                            <td>@item.Amount</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <a class="btn btn-info" href="@ViewBag.Url">Download Report</a>
+                <a class="btn btn-info" href="https://localhost:44304/FarmSpecialManagement/ListConsumptionFolio">Go Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+$(document).ready(function () {
+            $('#activity').DataTable(
+                {
+                    dom: 'Bfrtlp',
+                    paging: true,
+                    lengthChange: true,
+                    searching: true,
+                    ordering: false,
+                    info: true,
+                    autoWidth: false
+                });
+})
+    </script>
+}

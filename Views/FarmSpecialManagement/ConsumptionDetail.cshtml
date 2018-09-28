@@ -1,0 +1,100 @@
+    <div class="container-fluid">
+        <div class="col-xs-12">
+            <br />
+            <div class="card card-outline-info">
+                <div class="card-header bg-theme">
+                    <h2 class="m-b-0 text-white">Consumption List up to two days ago</h2>
+                </div>
+                <div class="card-body">
+
+                    <table id="consumption" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Center Cost</th>
+                                <th>Warehouse</th>
+                                <th>Correspondent Date</th>
+                                <th>Entry Date</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <br />
+                    <a class="btn btn-info" href="https://localhost:44304/FarmSpecialManagement/ListConsumptionFolio">Go Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section scripts{
+    <script src="https://cdn.datatables.net/select/1.2.2/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#consumption').DataTable({
+                dom: 'Bfrtlp',
+                ajax: {
+                    url: '/get/consumptionfolio/json/'+@ViewBag.Id,
+                    dataSrc: ''
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "centerCost" },
+                    { "data": "warehouse" },
+                    { "data": "consumptionEffectiveEntryDate" },
+                    { "data": "consumptionEntryDate" }
+                ],
+                paging: true,
+                lengthChange: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false,
+                        searchable: false
+                    }
+                ],
+                select: {
+                    style: 'single'
+                },
+                buttons: [
+                    {
+                        text: 'View Consumption',
+                        action: function (e, dt, node, config) {
+                            var rowData = dt.row({ selected: true }).data();
+                            if (rowData == null) {
+                                $.alert({
+                                    title: 'No cost center selected!',
+                                    content: 'No cost center has been selected, to continue please select a cost center.'
+                                });
+                            }
+                            else {
+                                window.location.href = '/FarmSpecialManagement/ViewConsumption/' + rowData.id;
+                            }
+                        },
+                        enabled: false
+                    }
+            ]
+        });
+        
+        table.on('select', function () {
+            var selectedRows = table.rows({ selected: true }).count();
+            table.button(0).enable(selectedRows == 1);
+            table.button(1).enable(selectedRows == 1);
+        });
+        table.on('deselect', function () {
+            //var unselectedRows = table.rows( {selected: false} ).count();
+            table.button(0).disable();
+            table.button(1).disable();
+        });
+
+
+
+        setInterval(function () {
+            table.ajax.reload();
+        }, 30000);
+            });
+    </script>
+    }

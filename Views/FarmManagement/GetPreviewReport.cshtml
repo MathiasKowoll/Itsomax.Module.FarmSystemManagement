@@ -1,4 +1,4 @@
-﻿@model ReportPreview
+﻿@model GenerateConsumptionReportViewModel
 
 <div class="container-fluid">
     <br />
@@ -9,7 +9,7 @@
                     <h2 class="m-b-0 text-white">Consumption Report by Date</h2>
                 </div>
                 <div class="card-body">
-                    <form autocomplete="off" class="form-horizontal  p-t-20" method="post" asp-controller="FarmManagement" asp-action="GetConsumptionReport">
+                    <form autocomplete="off" class="form-horizontal  p-t-20" method="post" asp-controller="FarmManagement" asp-action="PreviewReport">
                         <h3 class="box-title">Generate Report</h3>
                         <hr class="m-t-0 m-b-40">
                         <div class="form-group row">
@@ -66,26 +66,6 @@
             </div>
         </div>
     </div>
-    @if(ViewBag.Url != "")
-    {
-    <div id="downloadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Your Report is ready</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <div class="modal-body">
-                    <a class="btn btn-info" href="@ViewBag.Url">Download Report</a>
-                    <a class="btn btn-info" href="#">Accept Report</a>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info waves-effect" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    }
 </div>
 
 @section scripts{
